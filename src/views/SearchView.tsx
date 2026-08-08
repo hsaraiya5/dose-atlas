@@ -5,6 +5,24 @@ function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })
 }
 
+function EntryThumbnail({ entry }: { entry: MealEntry }) {
+  const src = entry.foodPhotoUrl ?? entry.dexcomScreenshotUrl
+  if (src) {
+    return (
+      <img
+        src={src}
+        alt=""
+        className="h-12 w-12 shrink-0 rounded-md object-cover bg-neutral-100 dark:bg-neutral-800"
+      />
+    )
+  }
+  return (
+    <div className="h-12 w-12 shrink-0 rounded-md bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-neutral-400 text-xs">
+      🍽️
+    </div>
+  )
+}
+
 export function SearchView({
   entries,
   placeFilter,
@@ -93,9 +111,7 @@ export function SearchView({
             onClick={() => onSelectEntry(entry.id)}
             className="text-left rounded-lg border border-neutral-200 dark:border-neutral-800 p-3 flex items-center gap-3"
           >
-            <div className="h-12 w-12 shrink-0 rounded-md bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-neutral-400 text-xs">
-              📷
-            </div>
+            <EntryThumbnail entry={entry} />
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium truncate">{entry.description}</p>
               <p className="text-xs text-neutral-500">
