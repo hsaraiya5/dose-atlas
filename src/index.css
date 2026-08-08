@@ -4,4 +4,12 @@ html,
 body {
   overscroll-behavior: none;
   overflow: hidden;
+  background-color: #fafafa; /* neutral-50, matches the app's light background */
+}
+
+@media (prefers-color-scheme: dark) {
+  html,
+  body {
+    background-color: #0a0a0a; /* neutral-950, matches the app's dark background */
+  }
 }
