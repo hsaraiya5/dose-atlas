@@ -153,7 +153,7 @@ function App() {
           {activeTab === 'foodDb' && <FoodDbView />}
         </main>
 
-        <nav className="border-t border-neutral-200 dark:border-neutral-900 flex pb-[env(safe-area-inset-bottom)]">
+        <nav className="mx-3 mb-[max(0.75rem,env(safe-area-inset-bottom))] flex rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 shadow-lg shadow-black/10 dark:shadow-black/40">
           {tabs.map((tab) => (
             <button
               key={tab.id}
