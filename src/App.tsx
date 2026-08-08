@@ -12,10 +12,52 @@ import type { MealEntry } from './types'
 type Tab = 'search' | 'add' | 'foodDb'
 type SearchScreen = { screen: 'list' } | { screen: 'detail'; id: string } | { screen: 'edit'; id: string }
 
-const tabs: { id: Tab; label: string; icon: string }[] = [
-  { id: 'search', label: 'Search', icon: '🔍' },
-  { id: 'add', label: 'Add', icon: '➕' },
-  { id: 'foodDb', label: 'Food DB', icon: '📖' },
+function SearchIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} width="19" height="19" viewBox="0 0 20 20" fill="none">
+      <circle cx="8.5" cy="8.5" r="6" stroke="currentColor" strokeWidth="1.4" />
+      <line x1="13" y1="13" x2="17.5" y2="17.5" stroke="currentColor" strokeWidth="1.4" />
+    </svg>
+  )
+}
+
+function AddIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} width="16" height="16" viewBox="0 0 16 16">
+      <line x1="8" y1="2" x2="8" y2="14" stroke="currentColor" strokeWidth="1.6" />
+      <line x1="2" y1="8" x2="14" y2="8" stroke="currentColor" strokeWidth="1.6" />
+    </svg>
+  )
+}
+
+function FoodDbIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} width="17" height="17" viewBox="0 0 20 20" fill="none">
+      <rect x="3" y="2.5" width="14" height="15" rx="1.4" stroke="currentColor" strokeWidth="1.3" />
+      <line x1="6.5" y1="6.5" x2="13.5" y2="6.5" stroke="currentColor" strokeWidth="1.1" />
+      <line x1="6.5" y1="10" x2="13.5" y2="10" stroke="currentColor" strokeWidth="1.1" />
+    </svg>
+  )
+}
+
+function CompassMark({ className }: { className?: string }) {
+  return (
+    <svg className={className} width="17" height="17" viewBox="0 0 20 20" fill="none">
+      <circle cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="1.1" opacity="0.55" />
+      <rect x="9.15" y="1.4" width="1.7" height="2.6" rx="0.6" fill="currentColor" opacity="0.55" />
+      <rect x="9.15" y="16" width="1.7" height="2.6" rx="0.6" fill="currentColor" opacity="0.35" />
+      <rect x="1.4" y="9.15" width="2.6" height="1.7" rx="0.6" fill="currentColor" opacity="0.35" />
+      <rect x="16" y="9.15" width="2.6" height="1.7" rx="0.6" fill="currentColor" opacity="0.35" />
+      <path d="M10 4.6 L12.6 10 L10 11.6 Z" fill="currentColor" />
+      <path d="M10 4.6 L7.4 10 L10 11.6 Z" fill="currentColor" opacity="0.4" />
+    </svg>
+  )
+}
+
+const tabs: { id: Tab; label: string; Icon: (props: { className?: string }) => React.JSX.Element }[] = [
+  { id: 'search', label: 'Search', Icon: SearchIcon },
+  { id: 'add', label: 'Add', Icon: AddIcon },
+  { id: 'foodDb', label: 'Food DB', Icon: FoodDbIcon },
 ]
 
 function App() {
@@ -96,13 +138,16 @@ function App() {
   }
 
   return (
-    <div className="h-svh flex justify-center bg-neutral-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100">
-      <div className="w-full max-w-md flex flex-col h-svh border-x border-neutral-200 dark:border-neutral-900">
-        <header className="px-4 pt-[max(1rem,env(safe-area-inset-top))] pb-4 border-b border-neutral-200 dark:border-neutral-900 flex items-center justify-between">
-          <h1 className="text-lg font-semibold">Dose Atlas</h1>
+    <div className="h-svh flex justify-center bg-bg text-fg font-body">
+      <div className="w-full max-w-md flex flex-col h-svh border-x border-line">
+        <header className="px-4 pt-[max(1rem,env(safe-area-inset-top))] pb-4 flex items-center justify-between">
+          <div className="flex items-center gap-1.5">
+            <CompassMark className="text-accent opacity-90" />
+            <h1 className="font-display text-lg tracking-wide text-fg [font-variant:small-caps]">Dose Atlas</h1>
+          </div>
           <button
             onClick={() => supabase.auth.signOut()}
-            className="text-sm text-neutral-500"
+            className="text-sm text-muted"
           >
             Log out
           </button>
@@ -113,7 +158,7 @@ function App() {
 
           {activeTab === 'search' && searchScreen.screen === 'list' && (
             entriesLoading ? (
-              <p className="text-sm text-neutral-400 text-center py-8">Loading...</p>
+              <p className="text-sm text-muted text-center py-8">Loading...</p>
             ) : (
               <SearchView
                 entries={entries}
@@ -153,22 +198,20 @@ function App() {
           {activeTab === 'foodDb' && <FoodDbView />}
         </main>
 
-        <nav className="mx-3 mb-[max(0.75rem,env(safe-area-inset-bottom))] flex rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 shadow-lg shadow-black/10 dark:shadow-black/40">
-          {tabs.map((tab) => (
+        <nav className="mx-3 mb-[max(0.75rem,env(safe-area-inset-bottom))] flex rounded-2xl bg-surface shadow-[0_8px_22px_-10px_rgba(0,0,0,0.4)] ring-1 ring-line">
+          {tabs.map(({ id, label, Icon }) => (
             <button
-              key={tab.id}
+              key={id}
               onClick={() => {
-                setActiveTab(tab.id)
-                if (tab.id === 'search') goToList()
+                setActiveTab(id)
+                if (id === 'search') goToList()
               }}
               className={`flex-1 flex flex-col items-center gap-0.5 py-2.5 text-xs ${
-                activeTab === tab.id
-                  ? 'text-purple-600 dark:text-purple-400'
-                  : 'text-neutral-400'
+                activeTab === id ? 'text-accent' : 'text-muted'
               }`}
             >
-              <span className="text-lg leading-none">{tab.icon}</span>
-              {tab.label}
+              <Icon className="leading-none" />
+              {label}
             </button>
           ))}
         </nav>

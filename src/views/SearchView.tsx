@@ -14,19 +14,23 @@ function formatDate(iso: string) {
 }
 
 function EntryThumbnail({ entry }: { entry: MealEntry }) {
-  const path = entry.foodPhotoUrl ?? entry.dexcomScreenshotUrl
+  const path = entry.dexcomScreenshotUrl ?? entry.foodPhotoUrl
   if (path) {
     return (
       <StorageImage
         path={path}
         alt=""
-        className="h-12 w-12 shrink-0 rounded-md object-cover bg-neutral-100 dark:bg-neutral-800"
+        className="h-11 w-11 shrink-0 rounded-lg object-cover bg-bg"
       />
     )
   }
   return (
-    <div className="h-12 w-12 shrink-0 rounded-md bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-neutral-400 text-xs">
-      🍽️
+    <div className="h-11 w-11 shrink-0 rounded-lg bg-bg flex items-center justify-center text-muted">
+      <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+        <rect x="2.5" y="4" width="15" height="12" rx="1.6" stroke="currentColor" strokeWidth="1.2" />
+        <circle cx="7" cy="8.5" r="1.4" stroke="currentColor" strokeWidth="1.1" />
+        <path d="M4 14 L8.5 10 L12 12.5 L16 9" stroke="currentColor" strokeWidth="1.1" />
+      </svg>
     </div>
   )
 }
@@ -74,7 +78,7 @@ export function SearchView({
         placeholder="Search meals..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        className="w-full rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-purple-500"
+        className="w-full rounded-xl bg-surface shadow-[0_2px_8px_-5px_rgba(0,0,0,0.25)] px-4 py-2.5 text-base text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent"
       />
 
       <div className="flex gap-2 overflow-x-auto pb-1">
@@ -82,10 +86,10 @@ export function SearchView({
           <button
             key={tag}
             onClick={() => onFilterPlace(placeFilter === tag ? null : tag)}
-            className={`whitespace-nowrap rounded-full px-3 py-1.5 text-sm border transition-colors ${
+            className={`whitespace-nowrap rounded-full px-3 py-1.5 text-sm transition-colors ${
               placeFilter === tag
-                ? 'bg-purple-600 border-purple-600 text-white'
-                : 'border-neutral-300 dark:border-neutral-700 text-neutral-600 dark:text-neutral-300'
+                ? 'bg-accent text-bg font-medium'
+                : 'bg-surface text-muted'
             }`}
           >
             {tag}
@@ -94,18 +98,18 @@ export function SearchView({
       </div>
 
       {(placeFilter || dateFilter) && (
-        <div className="flex items-center justify-between text-sm text-neutral-500">
+        <div className="flex items-center justify-between text-sm text-muted">
           <span>
-            {placeFilter && <>Showing {filtered.length} at <span className="font-medium">{placeFilter}</span></>}
+            {placeFilter && <>Showing {filtered.length} at <span className="font-medium text-fg">{placeFilter}</span></>}
             {placeFilter && dateFilter && ' · '}
-            {dateFilter && <>On <span className="font-medium">{formatDate(dateFilter)}</span></>}
+            {dateFilter && <>On <span className="font-medium text-fg">{formatDate(dateFilter)}</span></>}
           </span>
           <button
             onClick={() => {
               onFilterPlace(null)
               onFilterDate(null)
             }}
-            className="text-purple-600 dark:text-purple-400"
+            className="text-accent"
           >
             Clear
           </button>
@@ -117,24 +121,26 @@ export function SearchView({
           <button
             key={entry.id}
             onClick={() => onSelectEntry(entry.id)}
-            className="text-left rounded-lg border border-neutral-200 dark:border-neutral-800 p-3 flex items-center gap-3"
+            className="text-left rounded-xl bg-surface shadow-[0_3px_10px_-6px_rgba(0,0,0,0.28)] p-2.5 flex items-center gap-3"
           >
             <EntryThumbnail entry={entry} />
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">{entry.description}</p>
-              <p className="text-xs text-neutral-500">
+              <p className="text-sm font-medium truncate text-fg">{entry.description}</p>
+              <p className="text-xs text-muted">
                 {entry.place.join(', ')} · {formatDate(entry.date)}
               </p>
-              {entry.notes && <p className="text-xs text-neutral-400 truncate mt-0.5">{entry.notes}</p>}
+              {entry.notes && <p className="text-xs text-muted truncate mt-0.5">{entry.notes}</p>}
             </div>
             <div className="text-right shrink-0">
-              <p className="text-sm font-semibold text-purple-600 dark:text-purple-400">{entry.insulinDose}u</p>
-              {entry.preBolusMinutes > 0 && <p className="text-[11px] text-neutral-400">pre-bolused</p>}
+              <p className="text-sm font-semibold text-dose-fg bg-dose rounded-full px-2 py-0.5 tabular-nums">
+                {entry.insulinDose}u
+              </p>
+              {entry.preBolusMinutes > 0 && <p className="text-[11px] text-muted mt-1">pre-bolused</p>}
             </div>
           </button>
         ))}
         {filtered.length === 0 && (
-          <p className="text-sm text-neutral-400 text-center py-8">No entries match.</p>
+          <p className="text-sm text-muted text-center py-8">No entries match.</p>
         )}
       </div>
     </div>
