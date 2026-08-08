@@ -6,7 +6,7 @@ import { EntryDetail } from './views/EntryDetail'
 import { EntryForm } from './views/EntryForm'
 import { FoodDbView } from './views/FoodDbView'
 import { LoginView } from './views/LoginView'
-import { mockMealEntries, mockFoodDb } from './data/mockData'
+import { listMealEntries, createMealEntry, updateMealEntry, deleteMealEntry } from './lib/mealEntries'
 import type { MealEntry } from './types'
 
 type Tab = 'search' | 'add' | 'foodDb'
@@ -21,7 +21,9 @@ const tabs: { id: Tab; label: string; icon: string }[] = [
 function App() {
   const [session, setSession] = useState<Session | null | undefined>(undefined) // undefined = still checking
   const [activeTab, setActiveTab] = useState<Tab>('search')
-  const [entries, setEntries] = useState<MealEntry[]>(mockMealEntries)
+  const [entries, setEntries] = useState<MealEntry[]>([])
+  const [entriesLoading, setEntriesLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [searchScreen, setSearchScreen] = useState<SearchScreen>({ screen: 'list' })
   const [placeFilter, setPlaceFilter] = useState<string | null>(null)
   const [dateFilter, setDateFilter] = useState<string | null>(null)
@@ -33,6 +35,14 @@ function App() {
     })
     return () => listener.subscription.unsubscribe()
   }, [])
+
+  useEffect(() => {
+    if (!session) return
+    listMealEntries()
+      .then(setEntries)
+      .catch((err) => setError(err instanceof Error ? err.message : String(err)))
+      .finally(() => setEntriesLoading(false))
+  }, [session])
 
   function goToList() {
     setSearchScreen({ screen: 'list' })
@@ -50,15 +60,28 @@ function App() {
     goToList()
   }
 
-  function saveEntry(entry: MealEntry) {
-    setEntries((prev) => {
-      const exists = prev.some((e) => e.id === entry.id)
-      return exists ? prev.map((e) => (e.id === entry.id ? entry : e)) : [entry, ...prev]
-    })
-    if (activeTab === 'add') {
-      setActiveTab('search')
+  async function saveEntry(entry: MealEntry) {
+    try {
+      const exists = entries.some((e) => e.id === entry.id)
+      const saved = exists ? await updateMealEntry(entry) : await createMealEntry(entry)
+      setEntries((prev) => (exists ? prev.map((e) => (e.id === saved.id ? saved : e)) : [saved, ...prev]))
+      if (activeTab === 'add') {
+        setActiveTab('search')
+      }
+      setSearchScreen({ screen: 'detail', id: saved.id })
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err))
     }
-    setSearchScreen({ screen: 'detail', id: entry.id })
+  }
+
+  async function removeEntry(id: string) {
+    try {
+      await deleteMealEntry(id)
+      setEntries((prev) => prev.filter((e) => e.id !== id))
+      goToList()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err))
+    }
   }
 
   const selectedEntry =
@@ -86,15 +109,21 @@ function App() {
         </header>
 
         <main className="flex-1 overflow-y-auto px-4 py-4">
+          {error && <p className="text-sm text-red-500 mb-3">{error}</p>}
+
           {activeTab === 'search' && searchScreen.screen === 'list' && (
-            <SearchView
-              entries={entries}
-              placeFilter={placeFilter}
-              dateFilter={dateFilter}
-              onFilterPlace={setPlaceFilter}
-              onFilterDate={setDateFilter}
-              onSelectEntry={(id) => setSearchScreen({ screen: 'detail', id })}
-            />
+            entriesLoading ? (
+              <p className="text-sm text-neutral-400 text-center py-8">Loading...</p>
+            ) : (
+              <SearchView
+                entries={entries}
+                placeFilter={placeFilter}
+                dateFilter={dateFilter}
+                onFilterPlace={setPlaceFilter}
+                onFilterDate={setDateFilter}
+                onSelectEntry={(id) => setSearchScreen({ screen: 'detail', id })}
+              />
+            )
           )}
 
           {activeTab === 'search' && searchScreen.screen === 'detail' && selectedEntry && (
@@ -102,6 +131,7 @@ function App() {
               entry={selectedEntry}
               onBack={goToList}
               onEdit={() => setSearchScreen({ screen: 'edit', id: selectedEntry.id })}
+              onDelete={() => removeEntry(selectedEntry.id)}
               onSelectPlace={selectPlace}
               onSelectDate={selectDate}
             />
@@ -120,7 +150,7 @@ function App() {
             <EntryForm title="Add entry" onSave={saveEntry} onCancel={() => setActiveTab('search')} />
           )}
 
-          {activeTab === 'foodDb' && <FoodDbView items={mockFoodDb} />}
+          {activeTab === 'foodDb' && <FoodDbView />}
         </main>
 
         <nav className="border-t border-neutral-200 dark:border-neutral-900 flex">

@@ -2,7 +2,14 @@ import { useMemo, useState } from 'react'
 import type { MealEntry } from '../types'
 
 function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })
+  // Parse as local date components, not UTC - `new Date(iso)` treats "YYYY-MM-DD"
+  // as UTC midnight, which can display as the previous day in US timezones.
+  const [year, month, day] = iso.split('-').map(Number)
+  return new Date(year, month - 1, day).toLocaleDateString(undefined, {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  })
 }
 
 function EntryThumbnail({ entry }: { entry: MealEntry }) {

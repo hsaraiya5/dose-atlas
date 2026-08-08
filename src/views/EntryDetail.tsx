@@ -1,19 +1,29 @@
 import type { MealEntry } from '../types'
 
 function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
+  // Parse as local date components, not UTC - `new Date(iso)` treats "YYYY-MM-DD"
+  // as UTC midnight, which can display as the previous day in US timezones.
+  const [year, month, day] = iso.split('-').map(Number)
+  return new Date(year, month - 1, day).toLocaleDateString(undefined, {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  })
 }
 
 export function EntryDetail({
   entry,
   onBack,
   onEdit,
+  onDelete,
   onSelectPlace,
   onSelectDate,
 }: {
   entry: MealEntry
   onBack: () => void
   onEdit: () => void
+  onDelete: () => void
   onSelectPlace: (place: string) => void
   onSelectDate: (date: string) => void
 }) {
@@ -87,6 +97,10 @@ export function EntryDetail({
           <p className="text-sm">{entry.notes}</p>
         </div>
       )}
+
+      <button onClick={onDelete} className="text-sm text-red-500 mt-2">
+        Delete entry
+      </button>
     </div>
   )
 }
