@@ -21,3 +21,7 @@ At the start of a session working on this project, read `Session Log.md` (and th
 - Never commit directly to `main`.
 - For any feature or change, create a branch first, named `hrs/<feature-name>`.
 - Keep commit history organized so it's easy to revert to a known-good point.
+
+## Backlog
+
+Small bugs/feature ideas/nice-to-haves are tracked as **GitHub Issues** on this repo, not in a doc — use `gh issue create`/`gh issue list`. When a PR fixes one, reference `Closes #N` in the PR body so merging auto-closes it. Bigger product decisions and larger tabled features still belong in the Obsidian `PRD.md`.
