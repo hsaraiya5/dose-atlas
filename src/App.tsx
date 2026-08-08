@@ -147,7 +147,7 @@ function App() {
           </div>
           <button
             onClick={() => supabase.auth.signOut()}
-            className="text-sm text-muted"
+            className="text-sm text-muted bg-surface rounded-full px-3 py-1.5"
           >
             Log out
           </button>
