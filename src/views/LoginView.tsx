@@ -1,21 +1,26 @@
 import { useState } from 'react'
+import { supabase } from '../lib/supabaseClient'
 
-const inputClass =
-  'w-full rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-4 py-2.5 text-base text-center tracking-widest focus:outline-none focus:ring-2 focus:ring-purple-500'
-
-export function LoginView({ onLoggedIn }: { onLoggedIn: () => void }) {
-  const [step, setStep] = useState<'email' | 'code'>('email')
+export function LoginView() {
   const [email, setEmail] = useState('')
-  const [code, setCode] = useState('')
+  const [sent, setSent] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  function handleSendCode(e: React.FormEvent) {
+  async function handleSendLink(e: React.FormEvent) {
     e.preventDefault()
-    setStep('code')
-  }
-
-  function handleVerify(e: React.FormEvent) {
-    e.preventDefault()
-    onLoggedIn()
+    setLoading(true)
+    setError(null)
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: { shouldCreateUser: false },
+    })
+    setLoading(false)
+    if (error) {
+      setError(error.message)
+      return
+    }
+    setSent(true)
   }
 
   return (
@@ -24,12 +29,14 @@ export function LoginView({ onLoggedIn }: { onLoggedIn: () => void }) {
         <div className="text-center">
           <h1 className="text-xl font-semibold">Dose Atlas</h1>
           <p className="text-sm text-neutral-500 mt-1">
-            {step === 'email' ? 'Log in to continue' : `Enter the code sent to ${email || 'your email'}`}
+            {sent ? `Check your email (${email}) for a sign-in link` : 'Log in to continue'}
           </p>
         </div>
 
-        {step === 'email' && (
-          <form className="flex flex-col gap-3" onSubmit={handleSendCode}>
+        {error && <p className="text-sm text-red-500 text-center">{error}</p>}
+
+        {!sent && (
+          <form className="flex flex-col gap-3" onSubmit={handleSendLink}>
             <input
               type="email"
               autoComplete="email"
@@ -40,40 +47,21 @@ export function LoginView({ onLoggedIn }: { onLoggedIn: () => void }) {
             />
             <button
               type="submit"
-              className="rounded-lg bg-purple-600 text-white font-medium py-2.5 hover:bg-purple-700 transition-colors"
+              disabled={loading}
+              className="rounded-lg bg-purple-600 text-white font-medium py-2.5 hover:bg-purple-700 transition-colors disabled:opacity-50"
             >
-              Send code
+              {loading ? 'Sending...' : 'Send sign-in link'}
             </button>
           </form>
         )}
 
-        {step === 'code' && (
-          <form className="flex flex-col gap-3" onSubmit={handleVerify}>
-            <input
-              type="text"
-              inputMode="numeric"
-              autoComplete="one-time-code"
-              maxLength={6}
-              placeholder="••••••"
-              value={code}
-              onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
-              className={inputClass}
-              autoFocus
-            />
-            <button
-              type="submit"
-              className="rounded-lg bg-purple-600 text-white font-medium py-2.5 hover:bg-purple-700 transition-colors"
-            >
-              Verify
-            </button>
-            <button
-              type="button"
-              onClick={() => setStep('email')}
-              className="text-sm text-neutral-500"
-            >
-              ← Use a different email
-            </button>
-          </form>
+        {sent && (
+          <button
+            onClick={() => setSent(false)}
+            className="text-sm text-neutral-500"
+          >
+            ← Use a different email
+          </button>
         )}
       </div>
     </div>
