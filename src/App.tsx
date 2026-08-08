@@ -98,7 +98,7 @@ function App() {
   return (
     <div className="h-svh flex justify-center bg-neutral-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100">
       <div className="w-full max-w-md flex flex-col h-svh border-x border-neutral-200 dark:border-neutral-900">
-        <header className="px-4 py-4 border-b border-neutral-200 dark:border-neutral-900 flex items-center justify-between">
+        <header className="px-4 pt-[max(1rem,env(safe-area-inset-top))] pb-4 border-b border-neutral-200 dark:border-neutral-900 flex items-center justify-between">
           <h1 className="text-lg font-semibold">Dose Atlas</h1>
           <button
             onClick={() => supabase.auth.signOut()}
