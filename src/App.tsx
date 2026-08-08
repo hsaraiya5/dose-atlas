@@ -1,4 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import type { Session } from '@supabase/supabase-js'
+import { supabase } from './lib/supabaseClient'
 import { SearchView } from './views/SearchView'
 import { EntryDetail } from './views/EntryDetail'
 import { EntryForm } from './views/EntryForm'
@@ -17,13 +19,20 @@ const tabs: { id: Tab; label: string; icon: string }[] = [
 ]
 
 function App() {
-  // TODO: mock gate for previewing the login UI - replace with real Supabase Auth session check
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [session, setSession] = useState<Session | null | undefined>(undefined) // undefined = still checking
   const [activeTab, setActiveTab] = useState<Tab>('search')
   const [entries, setEntries] = useState<MealEntry[]>(mockMealEntries)
   const [searchScreen, setSearchScreen] = useState<SearchScreen>({ screen: 'list' })
   const [placeFilter, setPlaceFilter] = useState<string | null>(null)
   const [dateFilter, setDateFilter] = useState<string | null>(null)
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setSession(data.session))
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+    })
+    return () => listener.subscription.unsubscribe()
+  }, [])
 
   function goToList() {
     setSearchScreen({ screen: 'list' })
@@ -55,8 +64,12 @@ function App() {
   const selectedEntry =
     searchScreen.screen !== 'list' ? entries.find((e) => e.id === searchScreen.id) : undefined
 
-  if (!isLoggedIn) {
-    return <LoginView onLoggedIn={() => setIsLoggedIn(true)} />
+  if (session === undefined) {
+    return null // still checking for an existing session
+  }
+
+  if (session === null) {
+    return <LoginView />
   }
 
   return (
@@ -65,7 +78,7 @@ function App() {
         <header className="px-4 py-4 border-b border-neutral-200 dark:border-neutral-900 flex items-center justify-between">
           <h1 className="text-lg font-semibold">Dose Atlas</h1>
           <button
-            onClick={() => setIsLoggedIn(false)}
+            onClick={() => supabase.auth.signOut()}
             className="text-sm text-neutral-500"
           >
             Log out
