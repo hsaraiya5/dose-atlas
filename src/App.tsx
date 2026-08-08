@@ -108,7 +108,7 @@ function App() {
           </button>
         </header>
 
-        <main className="flex-1 overflow-y-auto px-4 py-4">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden px-4 py-4">
           {error && <p className="text-sm text-red-500 mb-3">{error}</p>}
 
           {activeTab === 'search' && searchScreen.screen === 'list' && (
@@ -153,7 +153,7 @@ function App() {
           {activeTab === 'foodDb' && <FoodDbView />}
         </main>
 
-        <nav className="border-t border-neutral-200 dark:border-neutral-900 flex">
+        <nav className="border-t border-neutral-200 dark:border-neutral-900 flex pb-[env(safe-area-inset-bottom)]">
           {tabs.map((tab) => (
             <button
               key={tab.id}
