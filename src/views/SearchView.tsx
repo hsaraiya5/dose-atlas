@@ -135,6 +135,9 @@ export function SearchView({
               <p className="text-sm font-semibold text-dose-fg bg-dose rounded-full px-2 py-0.5 tabular-nums">
                 {entry.insulinDose}u
               </p>
+              {entry.preBolusMinutes > 0 && (
+                <p className="text-[11px] text-muted mt-1.5">pre-bolused {entry.preBolusMinutes}m</p>
+              )}
             </div>
           </button>
         ))}
