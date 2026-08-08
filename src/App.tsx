@@ -14,7 +14,7 @@ type SearchScreen = { screen: 'list' } | { screen: 'detail'; id: string } | { sc
 
 function SearchIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} width="19" height="19" viewBox="0 0 20 20" fill="none">
+    <svg className={className} width="22" height="22" viewBox="0 0 20 20" fill="none">
       <circle cx="8.5" cy="8.5" r="6" stroke="currentColor" strokeWidth="1.4" />
       <line x1="13" y1="13" x2="17.5" y2="17.5" stroke="currentColor" strokeWidth="1.4" />
     </svg>
@@ -23,7 +23,7 @@ function SearchIcon({ className }: { className?: string }) {
 
 function AddIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} width="16" height="16" viewBox="0 0 16 16">
+    <svg className={className} width="19" height="19" viewBox="0 0 16 16">
       <line x1="8" y1="2" x2="8" y2="14" stroke="currentColor" strokeWidth="1.6" />
       <line x1="2" y1="8" x2="14" y2="8" stroke="currentColor" strokeWidth="1.6" />
     </svg>
@@ -32,7 +32,7 @@ function AddIcon({ className }: { className?: string }) {
 
 function FoodDbIcon({ className }: { className?: string }) {
   return (
-    <svg className={className} width="17" height="17" viewBox="0 0 20 20" fill="none">
+    <svg className={className} width="20" height="20" viewBox="0 0 20 20" fill="none">
       <rect x="3" y="2.5" width="14" height="15" rx="1.4" stroke="currentColor" strokeWidth="1.3" />
       <line x1="6.5" y1="6.5" x2="13.5" y2="6.5" stroke="currentColor" strokeWidth="1.1" />
       <line x1="6.5" y1="10" x2="13.5" y2="10" stroke="currentColor" strokeWidth="1.1" />
@@ -42,7 +42,7 @@ function FoodDbIcon({ className }: { className?: string }) {
 
 function CompassMark({ className }: { className?: string }) {
   return (
-    <svg className={className} width="17" height="17" viewBox="0 0 20 20" fill="none">
+    <svg className={className} width="20" height="20" viewBox="0 0 20 20" fill="none">
       <circle cx="10" cy="10" r="8" stroke="currentColor" strokeWidth="1.1" opacity="0.55" />
       <rect x="9.15" y="1.4" width="1.7" height="2.6" rx="0.6" fill="currentColor" opacity="0.55" />
       <rect x="9.15" y="16" width="1.7" height="2.6" rx="0.6" fill="currentColor" opacity="0.35" />
@@ -205,7 +205,7 @@ function App() {
                 key={id}
                 onClick={() => setActiveTab(id)}
                 aria-label={label}
-                className="flex h-[34px] w-[34px] items-center justify-center rounded-full bg-accent text-bg"
+                className="flex h-[39px] w-[39px] items-center justify-center rounded-full bg-accent text-bg"
               >
                 <Icon />
               </button>

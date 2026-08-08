@@ -88,7 +88,7 @@ export function EntryForm({
         <textarea
           className={inputClass}
           rows={2}
-          placeholder="e.g. Chicken tikka, rice, side salad"
+          placeholder="e.g. Daal, rice, roti"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
@@ -108,7 +108,7 @@ export function EntryForm({
         <label className={labelClass}>Meal tags</label>
         <input
           className={inputClass}
-          placeholder="e.g. chicken, rice"
+          placeholder="e.g. daal, rice"
           value={mealTags}
           onChange={(e) => setMealTags(e.target.value)}
         />

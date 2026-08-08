@@ -26,7 +26,7 @@ function EntryThumbnail({ entry }: { entry: MealEntry }) {
   }
   return (
     <div className="h-12 w-12 shrink-0 rounded-lg bg-bg flex items-center justify-center text-muted">
-      <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
+      <svg width="21" height="21" viewBox="0 0 20 20" fill="none">
         <rect x="2.5" y="4" width="15" height="12" rx="1.6" stroke="currentColor" strokeWidth="1.2" />
         <circle cx="7" cy="8.5" r="1.4" stroke="currentColor" strokeWidth="1.1" />
         <path d="M4 14 L8.5 10 L12 12.5 L16 9" stroke="currentColor" strokeWidth="1.1" />
@@ -125,7 +125,7 @@ export function SearchView({
           >
             <EntryThumbnail entry={entry} />
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate text-fg">{entry.description}</p>
+              <p className="text-base font-semibold truncate text-fg">{entry.description}</p>
               <p className="text-xs text-muted mt-1">
                 {entry.place.join(', ')} · {formatDate(entry.date)}
               </p>

@@ -96,7 +96,7 @@ export function FoodDbView() {
             className="text-left rounded-xl bg-surface shadow-[0_3px_10px_-6px_rgba(0,0,0,0.28)] p-4 flex items-center justify-between"
           >
             <div>
-              <p className="text-sm font-medium text-fg">{item.name}</p>
+              <p className="text-base font-semibold text-fg">{item.name}</p>
               {item.notes && <p className="text-xs text-muted mt-1">{item.notes}</p>}
             </div>
             <div className="text-right shrink-0">
