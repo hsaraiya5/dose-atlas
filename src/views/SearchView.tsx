@@ -20,12 +20,12 @@ function EntryThumbnail({ entry }: { entry: MealEntry }) {
       <StorageImage
         path={path}
         alt=""
-        className="h-11 w-11 shrink-0 rounded-lg object-cover bg-bg"
+        className="h-12 w-12 shrink-0 rounded-lg object-cover bg-bg"
       />
     )
   }
   return (
-    <div className="h-11 w-11 shrink-0 rounded-lg bg-bg flex items-center justify-center text-muted">
+    <div className="h-12 w-12 shrink-0 rounded-lg bg-bg flex items-center justify-center text-muted">
       <svg width="18" height="18" viewBox="0 0 20 20" fill="none">
         <rect x="2.5" y="4" width="15" height="12" rx="1.6" stroke="currentColor" strokeWidth="1.2" />
         <circle cx="7" cy="8.5" r="1.4" stroke="currentColor" strokeWidth="1.1" />
@@ -116,26 +116,26 @@ export function SearchView({
         </div>
       )}
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-3">
         {filtered.map((entry) => (
           <button
             key={entry.id}
             onClick={() => onSelectEntry(entry.id)}
-            className="text-left rounded-xl bg-surface shadow-[0_3px_10px_-6px_rgba(0,0,0,0.28)] p-2.5 flex items-center gap-3"
+            className="text-left rounded-xl bg-surface shadow-[0_3px_10px_-6px_rgba(0,0,0,0.28)] p-4 flex items-center gap-3"
           >
             <EntryThumbnail entry={entry} />
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium truncate text-fg">{entry.description}</p>
-              <p className="text-xs text-muted">
+              <p className="text-xs text-muted mt-1">
                 {entry.place.join(', ')} · {formatDate(entry.date)}
               </p>
-              {entry.notes && <p className="text-xs text-muted truncate mt-0.5">{entry.notes}</p>}
+              {entry.notes && <p className="text-xs text-muted truncate mt-1">{entry.notes}</p>}
             </div>
             <div className="text-right shrink-0">
               <p className="text-sm font-semibold text-dose-fg bg-dose rounded-full px-2 py-0.5 tabular-nums">
                 {entry.insulinDose}u
               </p>
-              {entry.preBolusMinutes > 0 && <p className="text-[11px] text-muted mt-1">pre-bolused</p>}
+              {entry.preBolusMinutes > 0 && <p className="text-[11px] text-muted mt-1.5">pre-bolused</p>}
             </div>
           </button>
         ))}

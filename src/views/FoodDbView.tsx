@@ -88,22 +88,22 @@ export function FoodDbView() {
         + Add food item
       </button>
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-3">
         {filtered.map((item) => (
           <button
             key={item.id}
             onClick={() => setScreen({ screen: 'edit', id: item.id })}
-            className="text-left rounded-xl bg-surface shadow-[0_3px_10px_-6px_rgba(0,0,0,0.28)] p-3 flex items-center justify-between"
+            className="text-left rounded-xl bg-surface shadow-[0_3px_10px_-6px_rgba(0,0,0,0.28)] p-4 flex items-center justify-between"
           >
             <div>
               <p className="text-sm font-medium text-fg">{item.name}</p>
-              {item.notes && <p className="text-xs text-muted mt-0.5">{item.notes}</p>}
+              {item.notes && <p className="text-xs text-muted mt-1">{item.notes}</p>}
             </div>
             <div className="text-right shrink-0">
               {item.typicalDose !== undefined && (
                 <p className="text-sm font-semibold text-dose tabular-nums">{item.typicalDose}u</p>
               )}
-              {item.carbs !== undefined && <p className="text-[11px] text-muted">{item.carbs}g carbs</p>}
+              {item.carbs !== undefined && <p className="text-[11px] text-muted mt-1">{item.carbs}g carbs</p>}
             </div>
           </button>
         ))}

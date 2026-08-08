@@ -198,22 +198,31 @@ function App() {
           {activeTab === 'foodDb' && <FoodDbView />}
         </main>
 
-        <nav className="mx-3 mb-[max(0.75rem,env(safe-area-inset-bottom))] flex rounded-2xl bg-surface shadow-[0_8px_22px_-10px_rgba(0,0,0,0.4)] ring-1 ring-line">
-          {tabs.map(({ id, label, Icon }) => (
-            <button
-              key={id}
-              onClick={() => {
-                setActiveTab(id)
-                if (id === 'search') goToList()
-              }}
-              className={`flex-1 flex flex-col items-center gap-0.5 py-2.5 text-xs ${
-                activeTab === id ? 'text-accent' : 'text-muted'
-              }`}
-            >
-              <Icon className="leading-none" />
-              {label}
-            </button>
-          ))}
+        <nav className="mx-3 mb-[max(0.75rem,env(safe-area-inset-bottom))] flex items-center justify-around rounded-[20px] bg-surface px-4 py-2.5 shadow-[0_8px_22px_-10px_rgba(0,0,0,0.4)] ring-1 ring-line">
+          {tabs.map(({ id, label, Icon }) =>
+            id === 'add' ? (
+              <button
+                key={id}
+                onClick={() => setActiveTab(id)}
+                aria-label={label}
+                className="flex h-[34px] w-[34px] items-center justify-center rounded-full bg-accent text-bg"
+              >
+                <Icon />
+              </button>
+            ) : (
+              <button
+                key={id}
+                onClick={() => {
+                  setActiveTab(id)
+                  if (id === 'search') goToList()
+                }}
+                aria-label={label}
+                className={activeTab === id ? 'text-accent' : 'text-muted'}
+              >
+                <Icon />
+              </button>
+            ),
+          )}
         </nav>
       </div>
     </div>
