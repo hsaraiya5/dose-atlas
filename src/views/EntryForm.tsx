@@ -4,8 +4,8 @@ import { uploadMealImage } from '../lib/storage'
 import { ImageUploadField } from './ImageUploadField'
 
 const inputClass =
-  'w-full rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-purple-500'
-const labelClass = 'text-sm font-medium text-neutral-600 dark:text-neutral-300'
+  'w-full rounded-xl bg-surface px-4 py-2.5 text-base text-fg placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-accent'
+const labelClass = 'text-sm font-medium text-muted'
 
 function today() {
   // Local calendar date, not UTC - toISOString() would roll over a day early/late
@@ -74,7 +74,7 @@ export function EntryForm({
 
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-      <h2 className="text-base font-semibold">{title}</h2>
+      <h2 className="text-base font-display [font-variant:small-caps] text-fg">{title}</h2>
 
       {error && <p className="text-sm text-red-500">{error}</p>}
 
@@ -143,12 +143,12 @@ export function EntryForm({
 
       <div className="grid grid-cols-2 gap-3">
         <ImageUploadField
-          label="📷 Food photo"
+          label="Food photo"
           existingPath={initial?.foodPhotoUrl}
           onFileSelected={setFoodPhotoFile}
         />
         <ImageUploadField
-          label="📈 Dexcom screenshot"
+          label="Dexcom screenshot"
           existingPath={initial?.dexcomScreenshotUrl}
           onFileSelected={setDexcomFile}
         />
@@ -170,7 +170,7 @@ export function EntryForm({
           <button
             type="button"
             onClick={onCancel}
-            className="flex-1 rounded-lg border border-neutral-300 dark:border-neutral-700 font-medium py-2.5"
+            className="flex-1 rounded-xl bg-surface text-fg font-medium py-2.5"
           >
             Cancel
           </button>
@@ -178,7 +178,7 @@ export function EntryForm({
         <button
           type="submit"
           disabled={saving}
-          className="flex-1 rounded-lg bg-purple-600 text-white font-medium py-2.5 hover:bg-purple-700 transition-colors disabled:opacity-50"
+          className="flex-1 rounded-xl bg-accent text-bg font-medium py-2.5 transition-opacity disabled:opacity-50"
         >
           {saving ? 'Saving...' : 'Save entry'}
         </button>
