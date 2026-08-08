@@ -3,6 +3,7 @@ import { SearchView } from './views/SearchView'
 import { EntryDetail } from './views/EntryDetail'
 import { EntryForm } from './views/EntryForm'
 import { FoodDbView } from './views/FoodDbView'
+import { LoginView } from './views/LoginView'
 import { mockMealEntries, mockFoodDb } from './data/mockData'
 import type { MealEntry } from './types'
 
@@ -16,6 +17,8 @@ const tabs: { id: Tab; label: string; icon: string }[] = [
 ]
 
 function App() {
+  // TODO: mock gate for previewing the login UI - replace with real Supabase Auth session check
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [activeTab, setActiveTab] = useState<Tab>('search')
   const [entries, setEntries] = useState<MealEntry[]>(mockMealEntries)
   const [searchScreen, setSearchScreen] = useState<SearchScreen>({ screen: 'list' })
@@ -52,11 +55,21 @@ function App() {
   const selectedEntry =
     searchScreen.screen !== 'list' ? entries.find((e) => e.id === searchScreen.id) : undefined
 
+  if (!isLoggedIn) {
+    return <LoginView onLoggedIn={() => setIsLoggedIn(true)} />
+  }
+
   return (
     <div className="min-h-svh flex justify-center bg-neutral-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100">
       <div className="w-full max-w-md flex flex-col min-h-svh border-x border-neutral-200 dark:border-neutral-900">
-        <header className="px-4 py-4 border-b border-neutral-200 dark:border-neutral-900">
+        <header className="px-4 py-4 border-b border-neutral-200 dark:border-neutral-900 flex items-center justify-between">
           <h1 className="text-lg font-semibold">Dose Atlas</h1>
+          <button
+            onClick={() => setIsLoggedIn(false)}
+            className="text-sm text-neutral-500"
+          >
+            Log out
+          </button>
         </header>
 
         <main className="flex-1 overflow-y-auto px-4 py-4">
