@@ -5,10 +5,12 @@ export function StorageImage({
   path,
   alt,
   className,
+  onClick,
 }: {
   path: string
   alt: string
   className?: string
+  onClick?: () => void
 }) {
   const [url, setUrl] = useState<string | null>(null)
 
@@ -28,5 +30,5 @@ export function StorageImage({
   }, [path])
 
   if (!url) return <div className={className} />
-  return <img src={url} alt={alt} className={className} />
+  return <img src={url} alt={alt} className={className} onClick={onClick} />
 }
