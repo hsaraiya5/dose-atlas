@@ -12,18 +12,15 @@
   --dose-fg: #fdf8ee;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #1b2119;
-    --surface: #232a1e;
-    --fg: #e9e6d8;
-    --muted: #8b9481;
-    --line: #333d2c;
-    --accent: #8fae7c;
-    --dose: #c98a63;
-    --dose-fg: #1b2119;
-  }
-}
+/* Dark mode (Moss & Ink palette) is intentionally disabled for now - light only.
+   Values are documented in Visual Design.md (Obsidian) if/when this comes back:
+   @media (prefers-color-scheme: dark) {
+     :root {
+       --bg: #1b2119; --surface: #232a1e; --fg: #e9e6d8; --muted: #8b9481;
+       --line: #333d2c; --accent: #8fae7c; --dose: #c98a63; --dose-fg: #1b2119;
+     }
+   }
+*/
 
 @theme {
   --color-bg: var(--bg);
