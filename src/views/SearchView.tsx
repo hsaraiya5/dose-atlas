@@ -132,7 +132,7 @@ export function SearchView({
               {entry.notes && <p className="text-xs text-muted truncate mt-1">{entry.notes}</p>}
             </div>
             <div className="text-right shrink-0">
-              <p className="text-sm font-semibold text-dose-fg bg-dose rounded-full px-2 py-0.5 tabular-nums">
+              <p className="inline-block text-sm font-semibold text-dose-fg bg-dose rounded-full px-2.5 py-0.5 tabular-nums">
                 {entry.insulinDose}u
               </p>
               {entry.preBolusMinutes > 0 && (
