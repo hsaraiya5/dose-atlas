@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { MealEntry } from '../types'
 import { StorageImage } from './StorageImage'
 
@@ -28,6 +29,8 @@ export function EntryDetail({
   onSelectPlace: (place: string) => void
   onSelectDate: (date: string) => void
 }) {
+  const [lightbox, setLightbox] = useState<{ path: string; alt: string } | null>(null)
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
@@ -88,7 +91,8 @@ export function EntryDetail({
           <StorageImage
             path={entry.foodPhotoUrl}
             alt="Food"
-            className="h-28 rounded-lg object-cover bg-neutral-100 dark:bg-neutral-800"
+            className="h-28 rounded-lg object-cover bg-neutral-100 dark:bg-neutral-800 cursor-pointer"
+            onClick={() => setLightbox({ path: entry.foodPhotoUrl!, alt: 'Food' })}
           />
         ) : (
           <div className="h-28 rounded-lg bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-neutral-400 text-sm">
@@ -99,7 +103,8 @@ export function EntryDetail({
           <StorageImage
             path={entry.dexcomScreenshotUrl}
             alt="Dexcom graph"
-            className="h-28 rounded-lg object-cover bg-neutral-100 dark:bg-neutral-800"
+            className="h-28 rounded-lg object-cover bg-neutral-100 dark:bg-neutral-800 cursor-pointer"
+            onClick={() => setLightbox({ path: entry.dexcomScreenshotUrl!, alt: 'Dexcom graph' })}
           />
         ) : (
           <div className="h-28 rounded-lg bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-neutral-400 text-sm">
@@ -107,6 +112,19 @@ export function EntryDetail({
           </div>
         )}
       </div>
+
+      {lightbox && (
+        <div
+          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
+          onClick={() => setLightbox(null)}
+        >
+          <StorageImage
+            path={lightbox.path}
+            alt={lightbox.alt}
+            className="max-h-full max-w-full object-contain"
+          />
+        </div>
+      )}
 
       {entry.notes && (
         <div>
