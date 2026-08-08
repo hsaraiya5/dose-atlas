@@ -2,6 +2,6 @@
 
 html,
 body {
-  overscroll-behavior-x: none;
-  overflow-x: hidden;
+  overscroll-behavior: none;
+  overflow: hidden;
 }
