@@ -1,4 +1,5 @@
 import type { MealEntry } from '../types'
+import { StorageImage } from './StorageImage'
 
 function formatDate(iso: string) {
   // Parse as local date components, not UTC - `new Date(iso)` treats "YYYY-MM-DD"
@@ -83,12 +84,28 @@ export function EntryDetail({
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <div className="h-28 rounded-lg bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-neutral-400 text-sm">
-          📷 Food photo
-        </div>
-        <div className="h-28 rounded-lg bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-neutral-400 text-sm">
-          📈 Dexcom graph
-        </div>
+        {entry.foodPhotoUrl ? (
+          <StorageImage
+            path={entry.foodPhotoUrl}
+            alt="Food"
+            className="h-28 rounded-lg object-cover bg-neutral-100 dark:bg-neutral-800"
+          />
+        ) : (
+          <div className="h-28 rounded-lg bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-neutral-400 text-sm">
+            📷 No food photo
+          </div>
+        )}
+        {entry.dexcomScreenshotUrl ? (
+          <StorageImage
+            path={entry.dexcomScreenshotUrl}
+            alt="Dexcom graph"
+            className="h-28 rounded-lg object-cover bg-neutral-100 dark:bg-neutral-800"
+          />
+        ) : (
+          <div className="h-28 rounded-lg bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-neutral-400 text-sm">
+            📈 No Dexcom graph
+          </div>
+        )}
       </div>
 
       {entry.notes && (

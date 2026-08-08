@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import type { MealEntry } from '../types'
+import { StorageImage } from './StorageImage'
 
 function formatDate(iso: string) {
   // Parse as local date components, not UTC - `new Date(iso)` treats "YYYY-MM-DD"
@@ -13,11 +14,11 @@ function formatDate(iso: string) {
 }
 
 function EntryThumbnail({ entry }: { entry: MealEntry }) {
-  const src = entry.foodPhotoUrl ?? entry.dexcomScreenshotUrl
-  if (src) {
+  const path = entry.foodPhotoUrl ?? entry.dexcomScreenshotUrl
+  if (path) {
     return (
-      <img
-        src={src}
+      <StorageImage
+        path={path}
         alt=""
         className="h-12 w-12 shrink-0 rounded-md object-cover bg-neutral-100 dark:bg-neutral-800"
       />

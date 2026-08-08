@@ -31,12 +31,15 @@ function rowToEntry(row: MealEntryRow): MealEntry {
 
 function entryToRow(entry: MealEntry) {
   return {
+    id: entry.id,
     date: entry.date,
     description: entry.description,
     place: entry.place,
     meal_tags: entry.mealTags,
     insulin_dose: entry.insulinDose,
     pre_bolus_minutes: entry.preBolusMinutes,
+    food_photo_path: entry.foodPhotoUrl ?? null,
+    dexcom_screenshot_path: entry.dexcomScreenshotUrl ?? null,
     notes: entry.notes ?? null,
   }
 }

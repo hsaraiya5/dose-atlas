@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import type { MealEntry } from '../types'
+import { uploadMealImage } from '../lib/storage'
+import { ImageUploadField } from './ImageUploadField'
 
 const inputClass =
   'w-full rounded-lg border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 px-4 py-2.5 text-base focus:outline-none focus:ring-2 focus:ring-purple-500'
@@ -26,6 +28,7 @@ export function EntryForm({
   onSave: (entry: MealEntry) => void
   onCancel: () => void
 }) {
+  const [entryId] = useState(initial?.id ?? crypto.randomUUID())
   const [date, setDate] = useState(initial?.date ?? today())
   const [description, setDescription] = useState(initial?.description ?? '')
   const [place, setPlace] = useState(initial?.place.join(', ') ?? '')
@@ -33,26 +36,47 @@ export function EntryForm({
   const [insulinDose, setInsulinDose] = useState(initial?.insulinDose?.toString() ?? '')
   const [preBolusMinutes, setPreBolusMinutes] = useState(initial?.preBolusMinutes?.toString() ?? '0')
   const [notes, setNotes] = useState(initial?.notes ?? '')
+  const [foodPhotoFile, setFoodPhotoFile] = useState<File | null>(null)
+  const [dexcomFile, setDexcomFile] = useState<File | null>(null)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    onSave({
-      id: initial?.id ?? crypto.randomUUID(),
-      date,
-      description,
-      place: place.split(',').map((p) => p.trim()).filter(Boolean),
-      mealTags: mealTags.split(',').map((t) => t.trim()).filter(Boolean),
-      insulinDose: parseFloat(insulinDose) || 0,
-      preBolusMinutes: parseInt(preBolusMinutes, 10) || 0,
-      foodPhotoUrl: initial?.foodPhotoUrl,
-      dexcomScreenshotUrl: initial?.dexcomScreenshotUrl,
-      notes: notes || undefined,
-    })
+    setSaving(true)
+    setError(null)
+    try {
+      const foodPhotoUrl = foodPhotoFile
+        ? await uploadMealImage(entryId, foodPhotoFile, 'food')
+        : initial?.foodPhotoUrl
+      const dexcomScreenshotUrl = dexcomFile
+        ? await uploadMealImage(entryId, dexcomFile, 'dexcom')
+        : initial?.dexcomScreenshotUrl
+
+      onSave({
+        id: entryId,
+        date,
+        description,
+        place: place.split(',').map((p) => p.trim()).filter(Boolean),
+        mealTags: mealTags.split(',').map((t) => t.trim()).filter(Boolean),
+        insulinDose: parseFloat(insulinDose) || 0,
+        preBolusMinutes: parseInt(preBolusMinutes, 10) || 0,
+        foodPhotoUrl,
+        dexcomScreenshotUrl,
+        notes: notes || undefined,
+      })
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err))
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
       <h2 className="text-base font-semibold">{title}</h2>
+
+      {error && <p className="text-sm text-red-500">{error}</p>}
 
       <div className="flex flex-col gap-1.5">
         <label className={labelClass}>Date</label>
@@ -118,14 +142,16 @@ export function EntryForm({
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        <label className="flex flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-neutral-300 dark:border-neutral-700 py-6 text-sm text-neutral-400 cursor-pointer">
-          📷 Food photo
-          <input type="file" accept="image/*" className="hidden" />
-        </label>
-        <label className="flex flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-neutral-300 dark:border-neutral-700 py-6 text-sm text-neutral-400 cursor-pointer">
-          📈 Dexcom screenshot
-          <input type="file" accept="image/*" className="hidden" />
-        </label>
+        <ImageUploadField
+          label="📷 Food photo"
+          existingPath={initial?.foodPhotoUrl}
+          onFileSelected={setFoodPhotoFile}
+        />
+        <ImageUploadField
+          label="📈 Dexcom screenshot"
+          existingPath={initial?.dexcomScreenshotUrl}
+          onFileSelected={setDexcomFile}
+        />
       </div>
 
       <div className="flex flex-col gap-1.5">
@@ -151,9 +177,10 @@ export function EntryForm({
         )}
         <button
           type="submit"
-          className="flex-1 rounded-lg bg-purple-600 text-white font-medium py-2.5 hover:bg-purple-700 transition-colors"
+          disabled={saving}
+          className="flex-1 rounded-lg bg-purple-600 text-white font-medium py-2.5 hover:bg-purple-700 transition-colors disabled:opacity-50"
         >
-          Save entry
+          {saving ? 'Saving...' : 'Save entry'}
         </button>
       </div>
     </form>
